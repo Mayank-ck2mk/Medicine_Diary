@@ -1,10 +1,12 @@
 package com.example.medicinediary.illness
 
 import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -79,6 +81,9 @@ class IllnessFragment : Fragment() {
                 if(!it.isEmpty()){
                     binding.tapGuide.visibility = GONE
                 }
+                else{
+                    binding.tapGuide.visibility = VISIBLE
+                }
                 Log.d("Database",it.toString())
             }
         })
@@ -127,6 +132,20 @@ class IllnessFragment : Fragment() {
                // Toast.makeText(context!!.applicationContext, "Canceled", Toast.LENGTH_SHORT).show()
             }
 
+        }
+
+        if(item!!.itemId ==  R.id.delete_all){
+
+            val mBuilder = AlertDialog.Builder(context)
+
+            mBuilder.setTitle("This will ERASE everything!")
+            mBuilder.setMessage("\nAre you sure to DELETE everything ?")
+            mBuilder.setPositiveButton("Yes",{ dialogInterface: DialogInterface, i: Int ->
+                illnessViewModel.deleteEverything()
+            })
+
+            mBuilder.setNegativeButton("No",{ dialogInterface: DialogInterface, i: Int -> })
+            mBuilder.show()
         }
 
         return super.onOptionsItemSelected(item)

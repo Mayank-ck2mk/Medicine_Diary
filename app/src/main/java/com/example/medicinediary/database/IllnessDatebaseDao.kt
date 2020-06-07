@@ -16,6 +16,9 @@ interface IllnessDatebaseDao {
     @Delete
     fun delete(completeIllness: IllnessMedicine)
 
+    @Query("DELETE from illness_medicine_table")
+    fun deleteAll()
+
     @Query("SELECT * from illness_medicine_table WHERE illness_id = :key")
     fun get(key: Long): IllnessMedicine
 
@@ -28,6 +31,6 @@ interface IllnessDatebaseDao {
     @Query("SELECT * FROM illness_medicine_table ORDER BY illness_id DESC LIMIT 1")
     fun getIllness() : IllnessMedicine?
 
-    @Query("SELECT * FROM illness_medicine_table ORDER BY illness_id DESC")
+    @Query("SELECT * FROM illness_medicine_table ORDER BY illness_id ASC")
     fun getAllIllnesses() : LiveData<List<IllnessMedicine>>
 }

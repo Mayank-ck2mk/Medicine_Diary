@@ -13,11 +13,14 @@ import kotlinx.coroutines.*
 
 class IllnessViewModel( val database :IllnessDatebaseDao,application : Application) : AndroidViewModel(application)  {
 
-
     var enteredIllness : String = ""
+
     /////////////////////////////////
 
     private var viewModelJob = Job()
+    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
 
     private val _navigateToMedicineFragment = MutableLiveData<IllnessMedicine?>()
     val navigateToMedicineFragment: LiveData<IllnessMedicine?>
@@ -36,7 +39,7 @@ class IllnessViewModel( val database :IllnessDatebaseDao,application : Applicati
         viewModelJob.cancel()
     }
 
-    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+
 
     private var illness = MutableLiveData<IllnessMedicine>()
 
@@ -109,15 +112,15 @@ class IllnessViewModel( val database :IllnessDatebaseDao,application : Applicati
         }
     }
 
-    fun deleteEverything(mIllness: IllnessMedicine) {
+    fun deleteEverything() {
         uiScope.launch {
-            deleteAll(mIllness)
+            deleteAll()
         }
     }
 
-    suspend fun deleteAll(illness: IllnessMedicine) {
+    suspend fun deleteAll() {
         withContext(Dispatchers.IO) {
-            database.delete(illness)
+            database.deleteAll()
         }
     }
 
