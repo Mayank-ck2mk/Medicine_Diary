@@ -1,60 +1,111 @@
 package com.example.medicinediary.medicine
 
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.example.medicinediary.R
+import com.example.medicinediary.database.IllnessDatabase
+import com.example.medicinediary.databinding.FragmentMedicineBinding
+import kotlinx.android.synthetic.main.add_illness_box.view.*
+import kotlinx.android.synthetic.main.add_illness_box.view.cancel_illness_button
+import kotlinx.android.synthetic.main.add_medicine_box.view.*
+import kotlinx.android.synthetic.main.fragment_medicine.view.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [MedicineFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class MedicineFragment : Fragment() {
-    // TODO: Rename and change types of parameters
+
     private var param1: String? = null
     private var param2: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
     }
+
+    private lateinit var binding: FragmentMedicineBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_medicine, container, false)
-    }
+        binding = FragmentMedicineBinding.inflate(inflater)
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MedicineFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MedicineFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+        val args = MedicineFragmentArgs.fromBundle(requireArguments())
+        val dataSource = IllnessDatabase.getInstance(context!!.applicationContext).illnessDatabaseDao
+        val viewModelFactory = MedicineViewModelFactory(args.illnessMedicine,dataSource)
+        val medicineViewModel = ViewModelProvider(this, viewModelFactory).get(MedicineViewModel::class.java)
+
+        binding.viewModel = medicineViewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+
+
+        medicineViewModel.medicineNameEntered.observe(viewLifecycleOwner, Observer { entered ->
+            if(entered){
+                binding.medicineTextView.text = medicineViewModel.illnessMedicine.medicine
+                binding.expiryTextView.text = medicineViewModel.illnessMedicine.expiryDate
+                binding.medicineCard.visibility = VISIBLE
+                binding.tapGuideMedicine.visibility = GONE
+            }
+        })
+
+        if(medicineViewModel.illnessMedicine.medicine == ""){
+            binding.medicineCard.visibility = GONE
+            binding.tapGuideMedicine.visibility = VISIBLE
+        }else{
+            binding.medicineTextView.text = medicineViewModel.illnessMedicine.medicine
+            binding.expiryTextView.text = medicineViewModel.illnessMedicine.expiryDate
+            binding.medicineCard.visibility = VISIBLE
+        }
+
+
+        medicineViewModel.openMedicineDialogBox.observe(viewLifecycleOwner, Observer { opened ->
+            if(opened){
+                val mDialogView = LayoutInflater.from(context).inflate(R.layout.add_medicine_box, null)
+                mDialogView.requestFocus()
+                val mBuilder = AlertDialog.Builder(context)
+                    .setView(mDialogView)
+
+                val mAlertDialog = mBuilder.show()
+
+                mDialogView.submit_medicine_button.setOnClickListener {
+
+                    if(mDialogView.enter_medicine.text.toString() == ""){
+                        Toast.makeText(context!!.applicationContext, "Please enter medicine name!", Toast.LENGTH_SHORT).show()
+                    }
+                    else {
+                        medicineViewModel.medicineName = mDialogView.enter_medicine.text.toString()
+                        medicineViewModel.expiryDate = mDialogView.enter_expiry_date.text.toString()
+                        medicineViewModel.onSubmitEntry()
+                        medicineViewModel.onMedicineNameEntered()
+                        mAlertDialog.dismiss()
+                    }
+
+                    //   (illnessViewModel.allIllnesses.value!!.size + 1).toString()
+                    medicineViewModel.onDialogBoxOpened()
+
+                }
+
+                mDialogView . cancel_illness_button . setOnClickListener {
+                    mAlertDialog.dismiss()
+                    // Toast.makeText(context!!.applicationContext, "Canceled", Toast.LENGTH_SHORT).show()
                 }
             }
+        })
+
+
+
+
+        // Inflate the layout for this fragment
+        return binding.root
     }
+
+
 }

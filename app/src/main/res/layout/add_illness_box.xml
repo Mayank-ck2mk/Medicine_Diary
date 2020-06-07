@@ -10,7 +10,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:visibility="visible"
-    app:cardCornerRadius="4dp"
+    app:cardCornerRadius="6dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="@+id/recycler_view_illness"
     app:layout_constraintStart_toStartOf="parent"
@@ -54,8 +54,7 @@
             app:layout_constraintBaseline_toBaselineOf="@+id/cancel_illness_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/cancel_illness_button"
-            android:onClick="@{()-> illnessViewModel.onSubmitEntry()}"/>
+            app:layout_constraintStart_toEndOf="@+id/cancel_illness_button"/>
 
         <Button
             android:id="@+id/cancel_illness_button"

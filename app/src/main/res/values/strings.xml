@@ -11,4 +11,8 @@
     <string name="hint_illness">Enter Your Illness</string>
     <string name="cancel_button">Cancel</string>
     <string name="submit_button">Submit</string>
+    <string name="medicine_name_here"><![CDATA[<Medicine Name Here>]]></string>
+    <string name="expiry_date"><![CDATA[<Expiry Date>]]></string>
+    <string name="hint_medicine_name">Enter medicine name</string>
+    <string name="hint_expiry_date">Enter expiry date</string>
 </resources>

@@ -1,9 +1,12 @@
 package com.example.medicinediary.database
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 @Entity(tableName = "illness_medicine_table")
 data class IllnessMedicine (
 
@@ -24,4 +27,4 @@ data class IllnessMedicine (
 
     @ColumnInfo(name = "prescription_id")
     var prescriptionId : Int = -1
-)
+) : Parcelable

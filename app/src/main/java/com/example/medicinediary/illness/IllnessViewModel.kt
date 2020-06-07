@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.medicinediary.database.IllnessDatebaseDao
@@ -17,6 +18,18 @@ class IllnessViewModel( val database :IllnessDatebaseDao,application : Applicati
     /////////////////////////////////
 
     private var viewModelJob = Job()
+
+    private val _navigateToMedicineFragment = MutableLiveData<IllnessMedicine?>()
+    val navigateToMedicineFragment: LiveData<IllnessMedicine?>
+        get() = _navigateToMedicineFragment
+
+    val adapter = IllnessAdapter(IllnessClickListener {
+        _navigateToMedicineFragment.value = it
+    })
+
+    fun onDoneNavigating(){
+        _navigateToMedicineFragment.value = null
+    }
 
     override fun onCleared() {
         super.onCleared()
@@ -93,6 +106,18 @@ class IllnessViewModel( val database :IllnessDatebaseDao,application : Applicati
     suspend fun delMed(illness: IllnessMedicine) {
         withContext(Dispatchers.IO) {
             database.deleteIllness(illness.illnessId)
+        }
+    }
+
+    fun deleteEverything(mIllness: IllnessMedicine) {
+        uiScope.launch {
+            deleteAll(mIllness)
+        }
+    }
+
+    suspend fun deleteAll(illness: IllnessMedicine) {
+        withContext(Dispatchers.IO) {
+            database.delete(illness)
         }
     }
 

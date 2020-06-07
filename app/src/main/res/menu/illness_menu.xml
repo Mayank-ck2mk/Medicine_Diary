@@ -2,6 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
+    <item
+        android:id="@+id/delete_all"
+        android:enabled="true"
+        android:icon="@drawable/ic_delete"
+        android:title="@string/menu_item_add_illness"
+        android:visible="true"
+        app:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/add_illness_icon"
         android:enabled="true"

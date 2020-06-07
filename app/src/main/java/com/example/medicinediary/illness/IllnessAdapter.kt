@@ -1,61 +1,61 @@
 package com.example.medicinediary.illness
 
+import android.os.Parcel
+import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.recyclerview.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.example.medicinediary.R
 import com.example.medicinediary.database.IllnessMedicine
+import com.example.medicinediary.databinding.IllnessItemBinding
 import kotlinx.android.synthetic.main.illness_item.view.*
 
-class IllnessAdapter() : RecyclerView.Adapter<IllnessAdapter.IllnessViewHolder>(){
+class IllnessAdapter(private val clickListener: IllnessClickListener) : ListAdapter<IllnessMedicine, IllnessAdapter.IllnessViewHolder>(DiffCallback) {
 
-    var data = ArrayList<IllnessMedicine>()
 
+    companion object DiffCallback : DiffUtil.ItemCallback<IllnessMedicine>(){
+        override fun areItemsTheSame(oldItem: IllnessMedicine, newItem: IllnessMedicine): Boolean {
+           return oldItem === newItem
+        }
+
+        override fun areContentsTheSame(
+            oldItem: IllnessMedicine,
+            newItem: IllnessMedicine
+        ): Boolean {
+            return oldItem == newItem
+        }
+
+    }
+
+
+    class IllnessViewHolder(private val binding: IllnessItemBinding): RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: IllnessMedicine?, clickListener: IllnessClickListener) {
+            binding.clickListener = clickListener
+            binding.illnessMedicine = item
+            binding.executePendingBindings()
+        }
+
+
+
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IllnessViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.illness_item,parent,false)
-        return IllnessViewHolder(view)
+        return IllnessViewHolder(IllnessItemBinding.inflate(LayoutInflater.from(parent.context)))
     }
 
     override fun onBindViewHolder(holder: IllnessViewHolder, position: Int) {
-        val currentItem = data[position]
-        holder.bind(currentItem)
+        val item = getItem(position)
+        holder.bind(item, clickListener)
     }
 
-    override fun getItemCount() = data.size
+}
 
-    class IllnessViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        val illnessIcon : ImageView = itemView.illness_item_img
-        val illnessText : TextView = itemView.illness_item_txt
-
-        fun bind(currentItem: IllnessMedicine) {
-            val res = itemView.context.resources
-            illnessText.text = currentItem.illness
-            illnessIcon.setImageResource(R.drawable.ic_baseline_local_hospital_24)
-
-//            illnessIcon.setImageResource(when (currentItem.illnessName) {
-//                0 -> R.drawable.ic_sleep_0
-//                1 -> R.drawable.ic_sleep_1
-//                2 -> R.drawable.ic_sleep_2
-//                3 -> R.drawable.ic_sleep_3
-//                4 -> R.drawable.ic_sleep_4
-//                5 -> R.drawable.ic_sleep_5
-//                else -> R.drawable.ic_sleep_active
-//            })
-        }
-    }
-
-
-    fun update(x : List<IllnessMedicine>){
-        data.clear()
-       for(t in x){
-           data.add(t)
-       }
-        Log.i("tagg","Updated")
-    }
+class IllnessClickListener(val clickListener: (currentIllness: IllnessMedicine) -> (Unit)){
+    fun onClick(currentIllness: IllnessMedicine) = clickListener(currentIllness)
 }

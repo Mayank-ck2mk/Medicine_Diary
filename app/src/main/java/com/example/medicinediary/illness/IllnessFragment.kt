@@ -4,10 +4,13 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.view.View.GONE
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.example.medicinediary.R
@@ -16,6 +19,7 @@ import com.example.medicinediary.database.IllnessDatebaseDao
 import com.example.medicinediary.databinding.FragmentIllnessBinding
 import kotlinx.android.synthetic.main.add_illness_box.view.*
 import kotlinx.android.synthetic.main.add_illness_box.view.enter_illness
+import kotlinx.android.synthetic.main.fragment_illness.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -61,25 +65,28 @@ class IllnessFragment : Fragment() {
         binding.setLifecycleOwner(this)
         binding.illnessViewModel = illnessViewModel
 
-        val adapter = IllnessAdapter()
-        binding.recyclerViewIllness.layoutManager = LinearLayoutManager(context)
-        binding.recyclerViewIllness.adapter = adapter
+        binding.recyclerViewIllness.adapter = illnessViewModel.adapter
+
+        illnessViewModel.navigateToMedicineFragment.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                NavHostFragment.findNavController(this).navigate(IllnessFragmentDirections.actionIllnessFragmentToMedicineFragment(it))
+                illnessViewModel.onDoneNavigating()
+            }
+        })
 
         illnessViewModel.allIllnesses.observe(viewLifecycleOwner, Observer {
             it?.let{
-                Log.d("data","Hello")
-                Log.d("data",it.toString())
-                adapter.update(it)
-                adapter.notifyDataSetChanged()
+                if(!it.isEmpty()){
+                    binding.tapGuide.visibility = GONE
+                }
+                Log.d("Database",it.toString())
             }
         })
 
 
-
-
         setHasOptionsMenu(true)
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_illness, container, false)
+        return binding.root
 
     }
 
@@ -100,10 +107,18 @@ class IllnessFragment : Fragment() {
                 val mAlertDialog = mBuilder.show()
 
             mDialogView.submit_illness_button.setOnClickListener {
-                illnessViewModel.enteredIllness = mDialogView.enter_illness.text.toString()
-                illnessViewModel.onSubmitEntry()
-                //Toast.makeText(context!!.applicationContext, mDialogView.enter_illness.text.toString(), Toast.LENGTH_SHORT).show()
-                mAlertDialog.dismiss()
+
+                if(mDialogView.enter_illness.text.toString() == ""){
+                    Toast.makeText(context!!.applicationContext, "Please enter illness!", Toast.LENGTH_SHORT).show()
+                }
+                else {
+                    illnessViewModel.enteredIllness = mDialogView.enter_illness.text.toString()
+                    illnessViewModel.onSubmitEntry()
+                    mAlertDialog.dismiss()
+                }
+
+             //   (illnessViewModel.allIllnesses.value!!.size + 1).toString()
+
 
             }
 

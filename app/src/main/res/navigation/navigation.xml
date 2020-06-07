@@ -8,5 +8,24 @@
         android:id="@+id/illnessFragment"
         android:name="com.example.medicinediary.illness.IllnessFragment"
         android:label="fragment_illness"
-        tools:layout="@layout/fragment_illness" />
+        tools:layout="@layout/fragment_illness" >
+        <action
+            android:id="@+id/action_illnessFragment_to_medicineFragment"
+            app:destination="@id/medicineFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/fragment_open_enter"
+            app:popExitAnim="@anim/fragment_close_exit"
+            app:popUpTo="@id/illnessFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/medicineFragment"
+        android:name="com.example.medicinediary.medicine.MedicineFragment"
+        android:label="fragment_medicine"
+        tools:layout="@layout/fragment_medicine" >
+        <argument
+            android:name="illnessMedicine"
+            app:argType="com.example.medicinediary.database.IllnessMedicine" />
+    </fragment>
 </navigation>
