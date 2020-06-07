@@ -71,9 +71,11 @@ class IllnessFragment : Fragment() {
 
         illnessViewModel.navigateToMedicineFragment.observe(viewLifecycleOwner, Observer {
             it?.let {
-                NavHostFragment.findNavController(this).navigate(IllnessFragmentDirections.actionIllnessFragmentToMedicineFragment(it))
-                illnessViewModel.onDoneNavigating()
-            }
+                    NavHostFragment.findNavController(this).navigate(
+                        IllnessFragmentDirections.actionIllnessFragmentToMedicineFragment(it)
+                    )
+                    illnessViewModel.onDoneNavigating()
+                }
         })
 
         illnessViewModel.allIllnesses.observe(viewLifecycleOwner, Observer {

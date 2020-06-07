@@ -51,7 +51,7 @@
             android:autofillHints="@string/hint_expiry_date"
             android:gravity="center|start"
             android:hint="@string/hint_expiry_date"
-            android:inputType="textShortMessage|text"
+            android:inputType="date"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

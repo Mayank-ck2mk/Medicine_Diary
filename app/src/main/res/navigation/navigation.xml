@@ -14,7 +14,6 @@
             app:destination="@id/medicineFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
-            app:popUpTo="@id/illnessFragment"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
@@ -26,4 +25,9 @@
             android:name="illnessMedicine"
             app:argType="com.example.medicinediary.database.IllnessMedicine" />
     </fragment>
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.example.medicinediary.AboutFragment"
+        android:label="fragment_about"
+        tools:layout="@layout/fragment_about" />
 </navigation>
