@@ -25,8 +25,8 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/medicine_card"
-            android:layout_width="410dp"
-            android:layout_height="160dp"
+            android:layout_width="0dp"
+            android:layout_height="150dp"
             android:elevation="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

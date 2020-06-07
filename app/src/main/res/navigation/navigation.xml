@@ -14,8 +14,6 @@
             app:destination="@id/medicineFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/fragment_open_enter"
-            app:popExitAnim="@anim/fragment_close_exit"
             app:popUpTo="@id/illnessFragment"
             app:popUpToInclusive="true" />
     </fragment>
